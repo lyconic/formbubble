@@ -1,0 +1,78 @@
+<html>
+  <head>
+    <title>FormBubble Examples</title>
+    <link href="stylesheets/formbubble.css" media="screen" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+    <script type="text/javascript" src="jquery.formbubble.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function() {
+      
+        $('#foobar1').hover(function() { //hover
+          $('.form-bubble').remove();
+          $.fn.formBubble.initialized = false;
+          $(this).formBubble({
+            closeButton: false
+          });
+          $.fn.formBubble.text('hover hover hover hover');
+        }, function() { //mouse out
+          if ($.fn.formBubble.initialized) $.fn.formBubble.close();
+        });
+      
+        $('#foobar1').click(function() { //clicking after hovering will close the bubble
+          $.fn.formBubble.close();
+          return false;
+        });
+  
+        $('#foobar2').click(function() {
+          if ($.fn.formBubble.initialized) {
+            $.fn.formBubble.destroy();
+          }
+          var url = $(this).attr('href');
+          $(this).formBubble({
+            url: url,
+            dataType: 'html',
+            cache: false
+          });
+          return false;
+        });
+        
+        $('#foobar3').click(function() {
+          if ($.fn.formBubble.initialized) {
+            $.fn.formBubble.destroy();
+          }
+          $(this).formBubble({
+            url: 'ajaxtest/test.js',
+            dataType: 'json',
+            cache: false
+          });
+          return false;
+        });
+        
+        $('#foobar4').click(function() {
+            $('.ohhai-world').formBubble({
+              text: 'OH HAI WORLD!!!1!',
+            });
+            return false;
+        });
+      
+      });
+    </script>
+  </head>
+  <body>
+    <p>
+      Full documentation, examples, and up-to-date source code can be found on our <a href="http://lyconic.com/resources/tools/formbubble/" target="_blank">Web site.</a>
+    </p>
+    <p>
+      <a href="#" class="ohhai-world" id="foobar1">Static Text (Hover)</a>
+    </p>
+    <p>
+      <a href="ajaxtest/index.html" class="ohhai-world" id="foobar2">HTML-based AJAX (Click)</a>
+    </p>
+    <p>
+      <a href="#" id="foobar3" class="ohhai-world">JSON-based AJAX (Click)</a>
+    </p>
+    <p>
+      <a href="#" id="foobar4" class="ohhai-world">Multiple Bubbles (Click)</a>
+    </p>
+  </body>
+</html>
