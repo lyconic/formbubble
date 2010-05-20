@@ -4,15 +4,7 @@
 
 FormBubble is a new light-weight jQuery plugin, weighing in at only *3.28KB minified*. In addition to its small size, a huge advantage of this plugin when compared to other tooltip plugins is that nearly all of the functions can be accessed programatically. This means you can bind any of the plugin's functions to your own custom events. Also, many of the functions can be overridden.
 
-== Options
-
-* *url*
-  * When the contents of the bubble are to be filled via AJAX, supply a valid URL.
-  * 
-
 == Example Usage
-
-Rather than doing the event binding for you, simply call formBubble() from within you own callbacks:
 
   $('#new').click(function() {
       $(this).formBubble({
