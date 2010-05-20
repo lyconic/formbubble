@@ -12,7 +12,7 @@ FormBubble is a new light-weight jQuery plugin, weighing in at only *3.28KB mini
       });
   });
 
-*Homepage:* - http://lyconic.com/resources/tools/formbubble
+<b>Homepage:</b> - http://lyconic.com/resources/tools/formbubble
 
 == Copyright
 
