@@ -2,7 +2,7 @@
 
 == Overview
 
-FormBubble is a new light-weight jQuery plugin, weighing in at only *3.28KB minified*. In addition to its small size, a huge advantage of this plugin when compared to other tooltip plugins is that nearly all of the functions can be accessed programatically. This means you can bind any of the plugin's functions to your own custom events. Also, many of the functions can be overridden.
+FormBubble is a new light-weight jQuery plugin, weighing in at only <b>3.28KB minified</b>. In addition to its small size, a huge advantage of this plugin when compared to other tooltip plugins is that nearly all of the functions can be accessed programatically. This means you can bind any of the plugin's functions to your own custom events. Also, many of the functions can be overridden.
 
 == Example Usage
 
