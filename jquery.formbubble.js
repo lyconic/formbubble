@@ -1,10 +1,10 @@
 /*
- * FormBubble v0.1.2
+ * FormBubble v0.1.3
  * Requires jQuery v1.32+
  * Created by Scott Greenfield
  *
- * Copyright 2010, Lyconic, LLC 
- * http://lyconic.com/
+ * Copyright 2010, Lyconic, Inc.
+ * http://www.lyconic.com/
  *
  * Licensed under the MIT license.
  * http://www.opensource.org/licenses/mit-license.php
@@ -20,31 +20,74 @@
         p = $.extend({
             url: 'none',
             dataType: 'none',
-            alignment: 'top-right',
+            alignment: {
+                bubble: 'right',
+                pointer: 'top-left'
+            },
+            doPointer: true,
             animationSpeed: 300,
             fadeOnBlur: true,
+            fadeOnBlurExceptions: ['.form-bubble', '.ui-datepicker-calendar', '.ui-datepicker-header', '#jstree-contextmenu'],  //selectors that will not cause the widget to close
             cache: false,
             closeButton: true,
             slide: true,
-            onOpenCallback: function(){ },
-            onCloseCallback: function(){ },
+            unique: true,
+            onOpenCallback: function(){},
+            onCloseCallback: function(){},
             text: '',
-            vOffset: 6,
-            hOffset: 13
+            hOffset: 13,
+            vOffset: 3
         }, params);
-        $.fn.formBubble.bubbleObject = '.form-bubble';
-        var objectCount = $(this).length;
-        return this.each(function(i) {
-            $.fn.formBubble.init(objectCount, i); //this will happen once and only once (even if you bind formbubble to your own events that can be triggered multiple times)
-            $.fn.formBubble.alignTo($(this));
-            if (p.url != 'none' && p.dataType != 'image' && $('.form-bubble' + ' #ajaxLoaded').length === 0){
-                $.fn.formBubble.ajax();
-            }
+        
+        $.fn.formBubble.bubbleObject = '.form-bubble';  //default
+
+        return this.each(function(){
+            $.fn.formBubble.init();
+            if (p.url != 'none' && p.dataType != 'image') $.fn.formBubble.ajax();
+            $.fn.formBubble.alignTo($(this), p.hOffset, p.vOffset);
             $.fn.formBubble.open($(this));
         });
     };
+    
     $.extend($.fn.formBubble, { //these functions can all be called programatically or overridden
-        browser: '',
+        alignTo: function(bubbleTarget, hOffset, vOffset){
+            var bubbleObject = $.fn.formBubble.bubbleObject,
+                position = bubbleTarget.offset(),
+                top = position.top,
+                left = position.left,
+                right;
+            
+            if (hOffset==undefined) hOffset = p.hOffset;
+            if (vOffset==undefined) vOffset = p.vOffset;
+
+            if (p.alignment.bubble == 'top'){
+                hOffset = hOffset + bubbleObject.outerWidth()/-4;
+                vOffset = vOffset + bubbleObject.outerHeight();
+            }else if (p.alignment.bubble === 'right'){
+                hOffset = hOffset + bubbleTarget.outerWidth();
+            }else if (p.alignment.bubble == 'left'){
+                right = $(window).width() - left;
+            }
+            
+            top = top - vOffset;
+            left = left + hOffset;            
+
+            if ($.browser.msie && parseInt($.browser.version) <= 7){
+                $.fn.formBubble.browser = 'lte ie7';
+            }else if ($(bubbleObject).css("display") != "none"){
+                $(bubbleObject).stop().fadeTo(0, 1);
+            }
+            
+            if (p.slide && $(bubbleObject).css("display") != "none"){
+                $(bubbleObject).stop().animate({'left' : left, 'top' : top}, p.animationSpeed);
+            }else{
+                if (right === undefined){
+                    $(bubbleObject).css({'left' : left, 'top' : top});
+                }else{
+                    $(bubbleObject).css({'right' : right, 'top' : top});
+                }
+            }
+        },
         ajax: function(){
             $.ajax({
                 beforeSend: function() { $.fn.formBubble.beforeSend(); },
@@ -57,90 +100,36 @@
             });
         },
         beforeSend: function(){
-            $('.form-bubble').find('.form-bubble-content').empty();
-            $('.form-bubble').find('.form-bubble-content').append('<div id="bubble-loading"><img src="/images/loading.gif" alt="Loading..." title="Loading..." /></div>');
-            
-        },
-        success: function(data) {
-            var dataValue;
-            if (p.dataType == 'json'){
-                dataValue = data.html;
-            }
-            if (p.dataType == 'html'){
-                dataValue = data;
-            }
-            $('.form-bubble').find('.form-bubble-content').append(dataValue);
-        },
-        complete: function(){
-            $('.form-bubble' + ' #bubble-loading').remove();            
-        },
-        alignTo: function(bubbleTarget){
-            var animate, position, top, left, hOffset, vOffset, bubbleObject;
-            bubbleObject = $.fn.formBubble.bubbleObject;
-            animate = function(){
-                $(bubbleObject).stop().animate({'left' : left, 'top' : top}, p.animationSpeed);
-            };
-            position = bubbleTarget.offset();
-            top = position.top;
-            left = position.left;
-            hOffset = p.hOffset;
-            vOffset = p.vOffset;
-            if (p.alignment == 'top-right'){ //doesn't need offsets supplied to work
-                hOffset = hOffset + bubbleTarget.outerWidth(); //if the supplied an offset add it on to it
-                top = top - vOffset;
-                left = left + hOffset;
-                if ($(bubbleObject).css("display") != "none"){
-                    $(bubbleObject).fadeTo(0, 1);
-                }
-                if (p.slide && $(bubbleObject).css("display") != "none"){
-                    animate();
-                }else{
-                    $(bubbleObject).css({'left' : left, 'top' : top});
-                }
-            }
-            if (p.alignment == 'top'){
-                hOffset = hOffset + $(bubbleObject).outerWidth()/-4; //if the supplied an offset add it on to it
-                vOffset = vOffset + ($(bubbleObject).outerHeight());
-                top = top - vOffset;
-                left = left + hOffset;
-                if ($(bubbleObject).css("display") != "none"){
-                    var crappyBrowserVersion;
-                    if (navigator.appName == 'Microsoft Internet Explorer'){
-                        var ua = navigator.userAgent;
-                        var re  = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
-                        if (re.exec(ua) != null) crappyBrowserVersion = parseFloat( RegExp.$1 );
-                        if (crappyBrowserVersion <= 7){
-                            $.fn.formBubble.browser = 'lte ie7';
-                        }else{
-                            $(bubbleObject).fadeTo(0, 1);
-                        }
-                    }else{
-                      $(bubbleObject).stop().fadeTo(0, 1);
-                    }
-                }
-                if (p.slide && $(bubbleObject).css("display") != "none"){
-                    animate();
-                }else{
-                    $(bubbleObject).css({'left' : left, 'top' : top});
-                }
-            }
+            $.fn.formBubble.bubbleObject.find('.form-bubble-content')
+                .empty()
+                .append('<div id="bubble-loading"><img src="/images/loading.gif" alt="Loading..." title="Loading..." /></div>');
         },
         bindings: function(bubbleObject){ //default bindings, these can be overridden and also called programatically, although they don't need to be.
             $(bubbleObject).find('.form-bubble-close').click(function() {
                 $.fn.formBubble.close(bubbleObject);
             });
-            $(bubbleObject).click(function() {
-                return false;
-            });
             if (!($.fn.formBubble.isBound)){ //ensures document-wide events are only bound once
                 $(document).click(function(event) {
                     if ((event.button === 0) && (p.fadeOnBlur)){
-                        $.fn.formBubble.close();
+                        var len=p.fadeOnBlurExceptions.length;
+                        var doClose = false;
+                        for (var i=0; i<len; ++i){ //loop through close exceptions, determine if click causes bubble to close
+                            if ($(event.target).parents(p.fadeOnBlurExceptions[i]).length || $(event.target).is(p.fadeOnBlurExceptions[i])){
+                                doClose = false;
+                                break;
+                            }else{
+                                doClose = true; //set it to true... for now
+                            }
+                        }
+                        if (doClose){
+                            $.fn.formBubble.close();
+                        }
                     }
                 });
             }
             $.fn.formBubble.isBound = true;
         },
+        browser: '',
         close: function(bubbleObject){
             var bubbleOpenNow = $($.fn.formBubble.bubbleObject).length;
             $.fn.formBubble.initialized = true;
@@ -148,7 +137,7 @@
                 bubbleObject = $('.form-bubble');
             }
             if ($.fn.formBubble.initialized){
-                if ($(bubbleObject).css("display") != "none"){ //bubble is visible
+                if ($(bubbleObject).is(':visible')){ //bubble is visible
                     if ($.fn.formBubble.browser == 'lte ie7'){
                         if (bubbleOpenNow){
                             $(bubbleObject).remove();
@@ -172,31 +161,29 @@
             }
             return false;
         },
+        complete: function(){
+            $.fn.formBubble.bubbleObject.find('#bubble-loading').remove();
+        },
         defaultBindings: true,
-        init: function(objectCount, i){
-            if (objectCount <= 1){
-                if ($.fn.formBubble.initialized){
-                    return true;
-                }else{
-                    $.fn.formBubble.initialized = true;
-                }
-            }else{
-                $.fn.formBubble.initialized = true;    
-            }
-            $('body').append('<div class="form-bubble"></div>');
-            var bubbleObject = $('.form-bubble:eq(' + i + ')');
-            $.fn.formBubble.bubbleObject = bubbleObject;
-            if (p.closeButton){
-                $(bubbleObject).prepend('<div class="form-bubble-close"></div>');
-            }
-            $(bubbleObject).append('<div class="form-bubble-pointer-' + p.alignment + '"></div>');
-            $(bubbleObject).append('<div class="form-bubble-content"></div>');
-            if ($.fn.formBubble.defaultBindings){
-                $.fn.formBubble.bindings(bubbleObject);
-            }
-            return true;
+        destroy: function(){ //destroys all formbubbles
+            $('body').find('.form-bubble').fadeOut(p.animationSpeed).remove();
+            $.fn.formBubble.initialized = false;
         },
         initialized: false,
+        init: function(){
+            var bubbleObject = $('<div class="form-bubble"><div class="form-bubble-content"></div></div>').appendTo('body');
+            
+            $.fn.formBubble.bubbleObject = bubbleObject;
+            
+            if (p.unique){
+                $('.form-bubble.unique').remove(); //close other uniques
+                bubbleObject.addClass('unique'); //add class unique to current object
+            }
+            
+            if (p.closeButton) bubbleObject.prepend('<div class="form-bubble-close"></div>');
+            if (p.doPointer) bubbleObject.append('<div class="form-bubble-pointer form-bubble-pointer-' + p.alignment.pointer + '"></div>');                
+            if ($.fn.formBubble.defaultBindings) $.fn.formBubble.bindings(bubbleObject);
+        },
         open: function(bubbleTarget){
             var bubbleObject = $.fn.formBubble.bubbleObject;
             if (p.dataType == 'image'){
@@ -215,17 +202,21 @@
                 });
             }
         },
+        success: function(data) {
+            var dataValue;
+            
+            if (p.dataType == 'json') dataValue = data.html;
+            if (p.dataType == 'html') dataValue = data;
+            
+            $.fn.formBubble.bubbleObject.find('.form-bubble-content').append(dataValue);
+        },
         text: function(data, bubbleTarget){
             var bubbleObject = $.fn.formBubble.bubbleObject;
-            if (data == 'targetText'){
-                data = $(bubbleTarget).text();
-            }
+
+            if (data == 'targetText') data = $(bubbleTarget).text();
+            
             $(bubbleObject).find('.form-bubble-content').remove();
             $(bubbleObject).append('<div class="form-bubble-content">' + data + '</div>');
-        },
-        destroy: function(){
-            $('body').find('.form-bubble').fadeOut(p.animationSpeed).remove();
-            $.fn.formBubble.initialized = false;
         }
     });
 })(jQuery);
