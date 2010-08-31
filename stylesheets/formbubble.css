@@ -1,41 +1,18 @@
-.form-bubble {
-  -moz-border-radius:6px;
-  -webkit-border-radius:6px;
-  -moz-box-shadow:2px 2px 4px #2c2c2c;
-  -webkit-box-shadow:2px 2px 4px #2c2c2c;
-  box-shadow:2px 2px 4px #2c2c2c;
-  background-color:#FFFFFF;
-  border:1px solid #b9c0c5;
-  display:none;
-  height:auto;
-  width:auto;
-  padding:16px;
-  margin-right:14px;
-  position:absolute;
-}
-.form-bubble .form-bubble-pointer-top-right, .form-bubble .form-bubble-pointer-top{
-    background-repeat:no-repeat;
-    height:13px;
-    position:absolute;
-    width:14px;
-}
-.form-bubble .form-bubble-pointer-top-right{
-  top:8px;
-}
 .form-bubble{
-
-}
-.form-bubble .form-bubble-pointer-top-right{
-    left:-14px;
-    background-image: url('../images/form-bubble-pointer-top-right.png');
-}
-.form-bubble .form-bubble-pointer-top{
-    background:transparent url('../images/form-bubble-pointer-top.png');
-    bottom:-30px;
-    left:50%;
-    margin-left:-16px;
-    width:33px;
-    height:30px;
+    background-color:#fff;
+    border:solid 1px #A7B1B8;
+    border-radius:5px;
+    -moz-border-radius:5px;
+    -webkit-border-radius:5px;
+    box-shadow:3px 3px 7px #A7B1B8;
+    -moz-box-shadow:3px 3px 7px #A7B1B8;
+    -webkit-box-shadow:3px 3px 7px #A7B1B8;
+    display:none;
+    float:left;
+    margin-right:14px;
+    padding:14px;
+    position:absolute;
+    z-index:101;
 }
 .form-bubble .form-bubble-close{
     background:#fff url('../images/close_button.png') no-repeat;
@@ -45,4 +22,39 @@
     right:5px;
     top:5px;
     width:10px !important;
+}
+/*all pointers*/
+.form-bubble .form-bubble-pointer-right, .form-bubble .form-bubble-pointer-top-right, .form-bubble .form-bubble-pointer-left, .form-bubble .form-bubble-pointer-top-left, .form-bubble .form-bubble-pointer-bottom-left{
+    background-repeat:no-repeat;
+    float:left;
+    height:13px;
+    position:absolute;
+    width:14px !important;
+}
+/*pointers right*/
+.form-bubble .form-bubble-pointer-right, .form-bubble .form-bubble-pointer-top-right{
+    background-image: url('../images/formbubblepointer-right.png');
+    right:-14px;
+}
+.form-bubble .form-bubble-pointer-right{
+    margin-top:-6px;
+    top:50%;
+}
+.form-bubble .form-bubble-pointer-top-right{
+    top:8px;
+}
+/*pointers left*/
+.form-bubble .form-bubble-pointer-left, .form-bubble .form-bubble-pointer-top-left, .form-bubble .form-bubble-pointer-bottom-left{
+    background-image: url('../images/formbubblepointer.png');
+    left:-14px;
+}
+.form-bubble .form-bubble-pointer-left{
+    margin-top:-6px;
+    top:50%;
+}
+.form-bubble .form-bubble-pointer-top-left{
+    top:8px;
+}
+.form-bubble .form-bubble-pointer-bottom-left{
+    bottom:14px;
 }
