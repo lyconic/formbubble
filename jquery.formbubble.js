@@ -57,8 +57,8 @@
                 left = position.left,
                 right;
             
-            if (hOffset==undefined) hOffset = p.hOffset;
-            if (vOffset==undefined) vOffset = p.vOffset;
+            if (hOffset===undefined) hOffset = p.hOffset;
+            if (vOffset===undefined) vOffset = p.vOffset;
 
             if (p.alignment.bubble == 'top'){
                 hOffset = hOffset + bubbleObject.outerWidth()/-4;
