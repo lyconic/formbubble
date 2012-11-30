@@ -208,7 +208,7 @@
             if (p.dataType == 'json') dataValue = data.html;
             if (p.dataType == 'html') dataValue = data;
             
-            $.fn.formBubble.bubbleObject.find('.form-bubble-content').append(dataValue);
+            $.fn.formBubble.bubbleObject.find('.form-bubble-content').empty().append(dataValue);
         },
         text: function(data, bubbleTarget){
             var bubbleObject = $.fn.formBubble.bubbleObject;
